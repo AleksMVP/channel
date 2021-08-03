@@ -3,30 +3,22 @@
 #include "../include/channel.h"
 
 int main() {
-    Channel<int> chan(10);
+    Go::Channel<int> chan(0);
 
     auto t = std::thread([&]{
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 500; i++) {
             chan.pushWait(i);
-        }
-    });
-    auto kek = std::thread([&]{
-        for (int i = 0; i < 50; i++) {
-            int tmp;
-            chan.popWait(tmp);
-            std::cout << tmp << std::endl;
         }
     });
 
     auto lol = std::thread([&]{
-        for (int i = 0; i < 50; i++) {
-            int tmp;
-            chan.popWait(tmp);
-            std::cout << tmp << std::endl;
+        for (const auto& item : chan) {
+            std::cout << item << std::endl;
         }
     });
 
     t.join();
-    kek.join();
+
+    chan.close();
     lol.join();
 }
